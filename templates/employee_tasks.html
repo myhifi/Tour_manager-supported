@@ -1,0 +1,167 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Employee Dashboard
+{% endblock %}
+
+{% block main %}
+    <h2>Employee Dashboard</h2>
+
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Confirmed Bookings</h5>
+                    <p class="card-text">{{ tours_confirmed }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Cancelled Bookings</h5>
+                    <p class="card-text">{{ tours_cancelled }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Pending Bookings</h5>
+                    <p class="card-text">{{ tours_pending }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+         <div class="col-md-6 offset-md-3">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Total Revenue (Confirmed)</h5>
+                    {# Format total revenue as currency with 2 decimal places #}
+                    <p class="card-text">${{ total_revenue | round(2) }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# Removed the Chart Section #}
+
+
+    <h3 class="mt-4">Upcoming Tours</h3>
+    {# Display upcoming tours here using a Jinja2 loop #}
+    {% if upcoming_tours %}
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Date</th>
+                    <th>Time</th>
+                    <th>Location</th>
+                    <th>Price</th>
+                    <th>Status</th>
+                    <th>Bookings</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for tour in upcoming_tours %}
+                    <tr>
+                        <td>{{ tour.name | default("N/A") }}</td>
+                        {# Use the formatted date and time #}
+                        <td>{{ tour.formatted_date | default("N/A") }}</td>
+                        <td>{{ tour.formatted_time | default("N/A") }}</td>
+                        <td>{{ tour.location | default("N/A") }}</td>
+                        <td>${{ tour.price | round(2) | default("N/A") }}</td> {# Format price as currency #}
+                        <td>{{ tour.status | default("N/A") }}</td>
+                        <td>{{ tour.current_bookings | default("N/A") }} / {{ tour.max_capacity | default("N/A") }}</td>
+                        <td>
+                            {# Links for Edit #}
+                            <a href="{{ url_for('edit_tour', tour_id=tour.id) }}">Edit</a>
+
+                            {# Form for Delete (requires POST) #}
+                            {# Adding a confirmation dialog with JavaScript is highly recommended #}
+                            <form action="{{ url_for('delete_tour', tour_id=tour.id) }}" method="post" class="d-inline">
+                                <button type="submit" class="btn btn-link btn-sm p-0 m-0 align-baseline" onclick="return confirm('Are you sure you want to delete this tour?');">Delete</button>
+                            </form>
+
+                            {# Form for Update Status (requires POST) - Example dropdown/button #}
+                            {# This is a simplified example; a modal or dedicated page might be better for complex status updates #}
+                             <form action="{{ url_for('update_tour_status', tour_id=tour.id) }}" method="post" class="d-inline">
+                                <select name="status" class="form-select-sm d-inline w-auto">
+                                    {# Options should match your DB status check #}
+                                    <option value="Scheduled" {% if tour.status == 'Scheduled' %}selected{% endif %}>Scheduled</option>
+                                    <option value="Confirmed" {% if tour.status == 'Confirmed' %}selected{% endif %}>Confirmed</option>
+                                    <option value="Cancelled" {% if tour.status == 'Cancelled' %}selected{% endif %}>Cancelled</option>
+                                    <option value="Completed" {% if tour.status == 'Completed' %}selected{% endif %}>Completed</option>
+                                     <option value="Archived" {% if tour.status == 'Archived' %}selected{% endif %}>Archived</option>
+                                </select>
+                                <button type="submit" class="btn btn-link btn-sm p-0 m-0 align-baseline">Update</button>
+                            </form>
+
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No upcoming tours found.</p>
+    {% endif %}
+
+    <h3 class="mt-4">Recent Bookings</h3>
+    {# Display recent bookings here using a Jinja2 loop #}
+     {% if recent_bookings %}
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Booking ID</th>
+                    <th>Booking Date</th>
+                    <th>Tour</th>
+                    <th>Customer</th>
+                    <th>People</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for booking in recent_bookings %}
+                    <tr>
+                        <td>{{ booking.id | default("N/A") }}</td> {# Display Booking ID #}
+                        {# Use the formatted booking date #}
+                        <td>{{ booking.formatted_booking_date | default("N/A") }}</td>
+                        {# Display Tour Name using the alias from the query #}
+                        <td>{{ booking.tour_name | default("N/A") }}</td>
+                         {# Display Customer Username using the alias from the query #}
+                        <td>{{ booking.customer_username | default("N/A") }}</td>
+                        <td>{{ booking.number_of_people | default("N/A") }}</td>
+                        <td>{{ booking.status | default("N/A") }}</td>
+                         <td>
+                             {# Form for Update Booking Status (requires POST) #}
+                             <form action="{{ url_for('update_booking_status', booking_id=booking.id) }}" method="post" class="d-inline">
+                                <select name="status" class="form-select-sm d-inline w-auto">
+                                    {# Options should match your DB status check #}
+                                     <option value="Pending" {% if booking.status == 'Pending' %}selected{% endif %}>Pending</option>
+                                     <option value="Confirmed" {% if booking.status == 'Confirmed' %}selected{% endif %}>Confirmed</option>
+                                     <option value="Cancelled" {% if booking.status == 'Cancelled' %}selected{% endif %}>Cancelled</option>
+                                </select>
+                                <button type="submit" class="btn btn-link btn-sm p-0 m-0 align-baseline">Update</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No recent bookings found.</p>
+    {% endif %}
+
+    {# Add links to Add Tour page #}
+    <p class="mt-4"><a href="{{ url_for('add_tour') }}" class="btn btn-primary">Add New Tour</a></p>
+
+    {# Removed Chart.js library and script tags #}
+
+
+    {# TODO: Add sections for other employee tasks or information as needed #}
+
+{% endblock %}

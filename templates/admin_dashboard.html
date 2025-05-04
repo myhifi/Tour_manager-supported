@@ -1,0 +1,66 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Admin Dashboard
+{% endblock %}
+
+{% block main %}
+    <h2>Administrator Dashboard</h2>
+
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Total Customers</h5>
+                    <p class="card-text">{{ customer_count }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Total Employees</h5>
+                    <p class="card-text">{{ employee_count }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Total Administrators</h5>
+                    <p class="card-text">{{ admin_count }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+     <div class="row mt-4">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Total Tours</h5>
+                    <p class="card-text">{{ total_tours }}</p>
+                </div>
+            </div>
+        </div>
+         <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Total Bookings</h5>
+                    <p class="card-text">{{ total_bookings }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# TODO: Add other overview statistics as needed (e.g., total revenue, bookings by status) #}
+
+    <h3 class="mt-4">Management Links</h3>
+    <div class="list-group mx-auto" style="max-width: 400px;">
+        <a href="{{ url_for('admin_list_users') }}" class="list-group-item list-group-item-action">Manage Users</a>
+        <a href="{{ url_for('admin_list_tours') }}" class="list-group-item list-group-item-action">Manage Tours</a>
+        <a href="{{ url_for('admin_list_bookings') }}" class="list-group-item list-group-item-action">Manage Bookings</a>
+        {# Add links to other admin management pages here #}
+    </div>
+
+{% endblock %}

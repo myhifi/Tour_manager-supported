@@ -1,0 +1,47 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Available Tours
+{% endblock %}
+
+{% block main %}
+    <h2>Available Tours</h2>
+
+    {% if available_tours %}
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Date</th>
+                    <th>Time</th>
+                    <th>Location</th>
+                    <th>Price</th>
+                    <th>Available Spots</th>
+                    <th></th> {# Column for View Details link #}
+                </tr>
+            </thead>
+            <tbody>
+                {% for tour in available_tours %}
+                    <tr>
+                        <td>{{ tour.name | default("N/A") }}</td>
+                        {# Display formatted date and time #}
+                        <td>{{ tour.formatted_date | default("N/A") }}</td>
+                        <td>{{ tour.formatted_time | default("N/A") }}</td>
+                        <td>{{ tour.location | default("N/A") }}</td>
+                        {# Format price as currency #}
+                        <td>${{ tour.price | round(2) | default("N/A") }}</td>
+                        {# Calculate and display available spots #}
+                        <td>{{ tour.max_capacity - tour.current_bookings }} / {{ tour.max_capacity }}</td>
+                        <td>
+                            {# Link to view tour details #}
+                            <a href="{{ url_for('view_tour_details', tour_id=tour.id) }}" class="btn btn-primary btn-sm">View Details</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No available tours found at this time.</p>
+    {% endif %}
+
+{% endblock %}

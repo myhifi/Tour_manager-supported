@@ -1,0 +1,49 @@
+# Ignore Python bytecode
+__pycache__/
+*.pyc
+*.pyd
+*.pyo
+
+# Ignore virtual environment directory
+# Common names are venv, .venv, env
+venv/
+.venv/
+env/
+
+# Ignore database file (contains user data and is generated from schema)
+# If your database file is elsewhere, update this path/name
+# tour_manager.db
+
+# Ignore Flask-Session filesystem storage
+# This is the default directory when using SESSION_TYPE = "filesystem"
+flask_session/
+sessions/ # Alternative common name
+
+# Ignore dependencies installed by pip
+# (You should commit requirements.txt instead)
+lib/
+lib64/
+include/
+bin/
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Ignore build artifacts
+build/
+dist/
+*.egg-info/
+.coverage
+.tox/
+
+# Ignore editor/IDE specific files
+# VS Code
+.vscode/
+
+# OS generated files
+.DS_Store # macOS
+Thumbs.db # Windows
+
+# Specific file ignores (if you don't want them tracked)
+# list_files.py # Example: if this is just a throwaway script
+
+# Add any other files or directories you don't want tracked

@@ -1,0 +1,46 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Manage Users
+{% endblock %}
+
+{% block main %}
+    <h2>Manage Users</h2>
+
+    {% if users %}
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Username</th>
+                    <th>Role</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in users %}
+                    <tr>
+                        <td>{{ user.id }}</td>
+                        <td>{{ user.username }}</td>
+                        <td>{{ user.roll }}</td>
+                        <td>
+                            {# Link to edit user role - prevent editing your own role #}
+                            {% if user.id != session["user_id"] %}
+                                <a href="{{ url_for('admin_edit_user_role', user_id=user.id) }}">Edit Role</a>
+                            {% else %}
+                                (Your Account)
+                            {% endif %}
+                            {# TODO: Add other user management actions here (e.g., delete user) #}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No users found.</p>
+    {% endif %}
+
+    {# Link back to the admin dashboard #}
+     <p class="mt-4"><a href="{{ url_for('admin_dashboard') }}">Back to Dashboard</a></p>
+
+{% endblock %}

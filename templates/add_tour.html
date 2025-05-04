@@ -1,0 +1,44 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Add New Tour
+{% endblock %}
+
+{% block main %}
+    <h2>Add New Tour</h2>
+    <form action="{{ url_for('add_tour') }}" method="post">
+        <div class="mb-3">
+            <label for="name" class="form-label">Tour Name</label>
+            <input autocomplete="off" autofocus class="form-control mx-auto w-auto" id="name" name="name" placeholder="Tour Name" type="text" value="{{ name if name is not none else '' }}" required>
+        </div>
+        <div class="mb-3">
+            <label for="location" class="form-label">Location</label>
+            <input class="form-control mx-auto w-auto" id="location" name="location" placeholder="Location" type="text" value="{{ location if location is not none else '' }}" required>
+        </div>
+         <div class="mb-3">
+            <label for="description" class="form-label">Description</label>
+            <textarea class="form-control mx-auto w-auto" id="description" name="description" placeholder="Description" rows="3">{{ description if description is not none else '' }}</textarea>
+        </div>
+        <div class="mb-3">
+            <label for="date" class="form-label">Date</label>
+            <input class="form-control mx-auto w-auto" id="date" name="date" type="date" value="{{ date if date is not none else '' }}" required>
+        </div>
+        <div class="mb-3">
+            <label for="time" class="form-label">Time</label>
+            <input class="form-control mx-auto w-auto" id="time" name="time" type="time" value="{{ time if time is not none else '' }}" required>
+        </div>
+         <div class="mb-3">
+            <label for="duration" class="form-label">Duration (e.g., 3 hours)</label>
+            <input class="form-control mx-auto w-auto" id="duration" name="duration" placeholder="Duration" type="text" value="{{ duration if duration is not none else '' }}">
+        </div>
+        <div class="mb-3">
+            <label for="price" class="form-label">Price</label>
+            <input class="form-control mx-auto w-auto" id="price" name="price" placeholder="Price" type="number" step="0.01" value="{{ price if price is not none else '' }}" required>
+        </div>
+        <div class="mb-3">
+            <label for="max_capacity" class="form-label">Max Capacity</label>
+            <input class="form-control mx-auto w-auto" id="max_capacity" name="max_capacity" placeholder="Max Capacity" type="number" min="1" value="{{ max_capacity if max_capacity is not none else '' }}" required>
+        </div>
+        <button class="btn btn-primary" type="submit">Add Tour</button>
+    </form>
+{% endblock %}

@@ -1,0 +1,56 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Manage All Bookings
+{% endblock %}
+
+{% block main %}
+    <h2>Manage All Bookings</h2>
+
+    {% if all_bookings %}
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Booking ID</th>
+                    <th>Booking Date</th>
+                    <th>Tour Name</th>
+                    <th>Customer Username</th>
+                    <th>People</th>
+                    <th>Status</th>
+                    <th>Actions</th> {# Placeholder for admin actions like updating booking status #}
+                </tr>
+            </thead>
+            <tbody>
+                {% for booking in all_bookings %}
+                    <tr>
+                        <td>{{ booking.id }}</td>
+                        {# Display formatted booking date #}
+                        <td>{{ booking.formatted_booking_date | default("N/A") }}</td>
+                        <td>{{ booking.tour_name | default("N/A") }}</td>
+                        <td>{{ booking.customer_username | default("N/A") }}</td>
+                        <td>{{ booking.number_of_people | default("N/A") }}</td>
+                        <td>{{ booking.status | default("N/A") }}</td>
+                        <td>
+                            {# Admins can use the same update status form as employees #}
+                             <form action="{{ url_for('update_booking_status', booking_id=booking.id) }}" method="post" class="d-inline">
+                                <select name="status" class="form-select-sm d-inline w-auto">
+                                    {# Options should match your DB status check #}
+                                     <option value="Pending" {% if booking.status == 'Pending' %}selected{% endif %}>Pending</option>
+                                     <option value="Confirmed" {% if booking.status == 'Confirmed' %}selected{% endif %}>Confirmed</option>
+                                     <option value="Cancelled" {% if booking.status == 'Cancelled' %}selected{% endif %}>Cancelled</option>
+                                </select>
+                                <button type="submit" class="btn btn-link btn-sm p-0 m-0 align-baseline">Update</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No bookings found.</p>
+    {% endif %}
+
+    {# Link back to the admin dashboard #}
+    <p class="mt-4"><a href="{{ url_for('admin_dashboard') }}">Back to Dashboard</a></p>
+
+{% endblock %}

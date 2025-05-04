@@ -1,0 +1,56 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    My Bookings
+{% endblock %}
+
+{% block main %}
+    <h2>My Bookings</h2>
+
+    {% if customer_bookings %}
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Booking Date</th>
+                    <th>Tour Name</th>
+                    <th>Tour Date</th>
+                    <th>Tour Time</th>
+                    <th>People</th>
+                    <th>Status</th>
+                    <th>Actions</th> {# Column for Cancel link/form #}
+                </tr>
+            </thead>
+            <tbody>
+                {% for booking in customer_bookings %}
+                    <tr>
+                        {# Display formatted booking date #}
+                        <td>{{ booking.formatted_booking_date | default("N/A") }}</td>
+                        <td>{{ booking.tour_name | default("N/A") }}</td>
+                         {# Display formatted tour date and time #}
+                        <td>{{ booking.formatted_tour_date | default("N/A") }}</td>
+                        <td>{{ booking.formatted_tour_time | default("N/A") }}</td>
+                        <td>{{ booking.number_of_people | default("N/A") }}</td>
+                        <td>{{ booking.status | default("N/A") }}</td>
+                        <td>
+                            {# Form for Cancel Booking (requires POST) #}
+                            {# Only show cancel option if status is Pending or Confirmed #}
+                            {% if booking.status == 'Pending' or booking.status == 'Confirmed' %}
+                                <form action="{{ url_for('cancel_booking', booking_id=booking.id) }}" method="post" class="d-inline">
+                                    <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to cancel this booking?');">Cancel</button>
+                                </form>
+                            {% else %}
+                                {# Display status if not cancellable #}
+                                {{ booking.status }}
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>You have no bookings yet.</p>
+        {# Link to browse tours #}
+        <p><a href="{{ url_for('list_tours') }}" class="btn btn-primary">Browse Available Tours</a></p>
+    {% endif %}
+
+{% endblock %}

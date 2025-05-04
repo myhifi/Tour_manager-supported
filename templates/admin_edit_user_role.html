@@ -1,0 +1,35 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Edit User Role: {{ user.username }}
+{% endblock %}
+
+{% block main %}
+    <h2>Edit Role for User: {{ user.username }}</h2>
+
+    {% if user %}
+        <form action="{{ url_for('admin_edit_user_role', user_id=user.id) }}" method="post">
+            {# Include a hidden input for the user ID #}
+            <input type="hidden" name="user_id" value="{{ user.id }}">
+
+            <div class="mb-3">
+                <label for="roll" class="form-label">Select New Role for {{ user.username }}:</label>
+                <select name="roll" id="roll" class="form-select mx-auto w-auto" required>
+                    {# Loop through allowed roles and set the current role as selected #}
+                    {% for role in allowed_roles %}
+                        <option value="{{ role }}" {% if user.roll == role %}selected{% endif %}>{{ role | capitalize }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <button class="btn btn-primary" type="submit">Update Role</button>
+            {# Optional: Add a Cancel button to go back #}
+            <a href="{{ url_for('admin_list_users') }}" class="btn btn-secondary">Cancel</a>
+        </form>
+    {% else %}
+        <p>User not found.</p>
+         {# Link back to the admin user list #}
+        <p class="mt-4"><a href="{{ url_for('admin_list_users') }}">Back to Manage Users</a></p>
+    {% endif %}
+
+{% endblock %}

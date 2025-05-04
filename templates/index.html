@@ -1,0 +1,115 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Tour Manager
+{% endblock %}
+
+{% block main %}
+    <h2>Welcome to Tour Manager!</h2>
+
+    {# Check if user is NOT logged in #}
+    {% if user_id is none %}
+        <p>Please log in or register to access more features and manage tours.</p>
+        <p>
+            <a href="{{ url_for('login') }}" class="btn btn-primary">Log In</a>
+            Or
+            <a href="{{ url_for('register') }}" class="btn btn-secondary">Register</a>
+        </p>
+        {# Display public tour information for logged-out users #}
+        <h3 class="mt-4">Featured Tours</h3>
+        {% if public_tours %}
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Date</th>
+                        <th>Time</th>
+                        <th>Location</th>
+                        <th>Price</th>
+                        <th>Available Spots</th>
+                        <th>Details</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for tour in public_tours %}
+                        <tr>
+                            <td>{{ tour.name | default("N/A") }}</td>
+                            <td>{{ tour.formatted_date | default("N/A") }}</td>
+                            <td>{{ tour.formatted_time | default("N/A") }}</td>
+                            <td>{{ tour.location | default("N/A") }}</td>
+                            <td>${{ tour.price | round(2) | default("N/A") }}</td>
+                            <td>{{ tour.max_capacity - tour.current_bookings | default("N/A") }} / {{ tour.max_capacity | default("N/A") }}</td>
+                            {# Link to login page for not logged-in users #}
+                            <td><a href="{{ url_for('login') }}">View Details (Login Required)</a></td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p>No featured tours available at this time.</p>
+        {% endif %}
+
+    {% else %}
+        {# User is logged in, display a welcome message and role-specific links #}
+        <p>Welcome back, {{ session["user_roll"] }}!</p>
+
+        {# Example: Show employee/admin-specific links #}
+        {% if session["user_roll"] == "employee" or session["user_roll"] == "administrator" %}
+            <p>
+                <a href="{{ url_for('employee_tasks') }}" class="btn btn-info">Go to Employee Dashboard</a>
+            </p>
+        {% endif %}
+
+        {# Example: Show customer-specific links #}
+        {% if session["user_roll"] == "customer" %}
+            <p>
+                <a href="{{ url_for('my_bookings') }}" class="btn btn-info">View My Bookings</a>
+                 <a href="{{ url_for('list_tours') }}" class="btn btn-primary">Browse All Available Tours</a>
+            </p>
+        {% endif %}
+
+        {# Display a list of available tours for all logged-in users #}
+        <h3 class="mt-4">Available Tours</h3>
+        {% if public_tours %} {# Reusing public_tours data for simplicity, you could fetch a different list if needed #}
+             <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Date</th>
+                        <th>Time</th>
+                        <th>Location</th>
+                        <th>Price</th>
+                        <th>Available Spots</th>
+                        <th>Details</th>
+                         {# Add a Book column for logged-in users #}
+                        {% if user_id is not none %}
+                            <th>Book</th>
+                        {% endif %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for tour in public_tours %}
+                        <tr>
+                            <td>{{ tour.name | default("N/A") }}</td>
+                            <td>{{ tour.formatted_date | default("N/A") }}</td>
+                            <td>{{ tour.formatted_time | default("N/A") }}</td>
+                            <td>{{ tour.location | default("N/A") }}</td>
+                            <td>${{ tour.price | round(2) | default("N/A") }}</td>
+                            <td>{{ tour.max_capacity - tour.current_bookings | default("N/A") }} / {{ tour.max_capacity | default("N/A") }}</td>
+                            {# Link to view tour details page for logged-in users #}
+                            <td><a href="{{ url_for('view_tour_details', tour_id=tour.id) }}">View Details</a></td>
+                            {# Add a Book button/link for logged-in users #}
+                            {% if user_id is not none %}
+                                <td><a href="{{ url_for('book_tour', tour_id=tour.id) }}" class="btn btn-success btn-sm">Book Now</a></td>
+                            {% endif %}
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p>No available tours at this time.</p>
+        {% endif %}
+
+    {% endif %}
+
+{% endblock %}

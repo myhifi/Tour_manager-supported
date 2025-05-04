@@ -1,0 +1,49 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Booking History
+{% endblock %}
+
+{% block main %}
+    <h2>Booking History</h2>
+
+    {% if booking_history %}
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Booking ID</th>
+                    <th>Booking Date</th>
+                    <th>Tour Name</th>
+                    <th>Tour Date</th>
+                    <th>Tour Time</th>
+                    <th>Location</th>
+                    <th>Price</th>
+                    <th>People</th>
+                    <th>Booking Status</th>
+                    <th>Tour Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for booking in booking_history %}
+                    <tr>
+                        <td>{{ booking.id | default("N/A") }}</td>
+                        <td>{{ booking.formatted_booking_date | default("N/A") }}</td>
+                        <td>{{ booking.tour_name | default("N/A") }}</td>
+                        <td>{{ booking.formatted_tour_date | default("N/A") }}</td>
+                        <td>{{ booking.formatted_tour_time | default("N/A") }}</td>
+                        <td>{{ booking.tour_location | default("N/A") }}</td>
+                        <td>${{ booking.tour_price | round(2) | default("N/A") }}</td>
+                        <td>{{ booking.number_of_people | default("N/A") }}</td>
+                        <td>{{ booking.booking_status | default("N/A") }}</td>
+                        <td>{{ booking.tour_status | default("N/A") }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>You have no booking history.</p>
+    {% endif %}
+
+    <p><a href="{{ url_for('index') }}">Back to Home</a></p>
+
+{% endblock %}
